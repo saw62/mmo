@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -35,7 +37,7 @@ public class Mmo implements Serializable {
 		return false;
 	}
 
-	private void creerJoueur() {
+	private void creerJoueur() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		String choixPseudo;
 		String choixPersonnage = null;
 		Personnage personnage = null;
@@ -43,6 +45,9 @@ public class Mmo implements Serializable {
 		do {
 			System.out.println("Veuillez entrer votre pseudo :");
 			choixPseudo = sc.next();
+
+			Crud.CreateJoueur(Conn.connection(), choixPseudo);
+
 			choixPersonnage = null;
 			while (choixPersonnage == null) {
 				System.out.println("Quelle personnage voulez-vous jouer ?\n\t1 - Archer\n\t2 - Soldat\n\t3 - Sorcier");
@@ -62,6 +67,7 @@ public class Mmo implements Serializable {
 					break;
 				}
 			}
+			Crud.createPerso(Conn.connection() , personnage, Crud.getIdByPseudo(Conn.connection(),choixPseudo));
 			j = new Joueur(choixPseudo, personnage);
 		} while (!ajouterJoueur(j));
 	}
@@ -116,8 +122,14 @@ public class Mmo implements Serializable {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		Mmo mmo = Mmo.restaurer();
+	public static void main(String[] args) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+		Conn conn = new Conn();
+		Crud bdd = new Crud();
+		Connection cnx = conn.connection();
+
+		Mmo mmo = new Mmo();
+		mmo.creerJoueur();
+		/*Mmo mmo = Mmo.restaurer();
 		if (mmo == null) { // Si il y a pas de récupération possible
 			mmo = new Mmo();
 			mmo.creerJoueur();
@@ -125,6 +137,6 @@ public class Mmo implements Serializable {
 		}
 		RegenerationThread regen = new RegenerationThread(mmo.joueurs);
 		regen.start();
-		mmo.jouer();
+		mmo.jouer();*/
 	}
 }

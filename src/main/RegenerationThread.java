@@ -20,8 +20,7 @@ public class RegenerationThread extends Thread {
 					int santeAvantRegen = p.getSante();
 					p.setSante(santeAvantRegen + RegenerationThread.regenerationParSeconde);
 					if (santeAvantRegen != p.getSante()) {
-						System.out
-								.println("Santé de " + p + " régénéré de " + RegenerationThread.regenerationParSeconde);
+						System.out.println("Santé de " + p + " régénéré de " + RegenerationThread.regenerationParSeconde);
 					}
 				}
 			}
