@@ -40,36 +40,48 @@ public class Mmo implements Serializable {
 	private void creerJoueur() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		String choixPseudo;
 		String choixPersonnage = null;
+		String rep = null;
 		Personnage personnage = null;
 		Joueur j;
-		do {
-			System.out.println("Veuillez entrer votre pseudo :");
-			choixPseudo = sc.next();
 
-			Crud.CreateJoueur(Conn.connection(), choixPseudo);
+		System.out.println("charger une partie ? o/n");
+		rep = sc.next();
+		if(rep != "o") {
+			do {
+				System.out.println("Veuillez entrer votre pseudo :");
+				choixPseudo = sc.next();
 
-			choixPersonnage = null;
-			while (choixPersonnage == null) {
-				System.out.println("Quelle personnage voulez-vous jouer ?\n\t1 - Archer\n\t2 - Soldat\n\t3 - Sorcier");
-				choixPersonnage = sc.next();
-				switch (choixPersonnage) {
-				case "1":
-					personnage = new Archer();
-					break;
-				case "2":
-					personnage = new Soldat();
-					break;
-				case "3":
-					personnage = new Sorcier();
-					break;
-				default:
-					choixPersonnage = null;
-					break;
+				Crud.CreateJoueur(Conn.connection(), choixPseudo);
+
+				choixPersonnage = null;
+				while (choixPersonnage == null) {
+					System.out.println("Quelle personnage voulez-vous jouer ?\n\t1 - Archer\n\t2 - Soldat\n\t3 - Sorcier");
+					choixPersonnage = sc.next();
+					switch (choixPersonnage) {
+						case "1":
+							personnage = new Archer();
+							break;
+						case "2":
+							personnage = new Soldat();
+							break;
+						case "3":
+							personnage = new Sorcier();
+							break;
+						default:
+							choixPersonnage = null;
+							break;
+					}
 				}
-			}
-			Crud.createPerso(Conn.connection() , personnage, Crud.getIdByPseudo(Conn.connection(),choixPseudo));
-			j = new Joueur(choixPseudo, personnage);
-		} while (!ajouterJoueur(j));
+				Crud.createPerso(Conn.connection(), personnage, Crud.getIdByPseudo(Conn.connection(), choixPseudo));
+				j = new Joueur(choixPseudo, personnage);
+			} while (!ajouterJoueur(j));
+		} else {
+			do{
+				System.out.println("entrez le pseudo du joueur a charger");
+				choixPseudo = sc.next();
+			} while(Crud.getIdByPseudo(Conn.connection(), choixPseudo ) == null);
+			Crud.getIdByPseudo(Conn.connection(), choixPseudo);
+		}
 	}
 
 	private void creerMonstre() {

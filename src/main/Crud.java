@@ -16,7 +16,7 @@ public class Crud {
         PreparedStatement createp = cnx.prepareStatement (
                 "INSERT INTO personnage (nomPerso, niveau, sante, santeMax, niveauExp, idJoueur) VALUES (?,?,?,?,?,?)"
         );
-        createp.setString(1, String.valueOf(p.getClass()));
+        createp.setString(1, p.getClass().getSimpleName());
         createp.setInt(2, p.getNiveau());
         createp.setInt(3, p.getSante());
         createp.setInt(4, p.getSanteMax());
@@ -27,7 +27,7 @@ public class Crud {
         return statut;
     }
 
-    public static Integer getIdByPseudo( Connection cnx ,String pseudo) throws SQLException {
+    public static Integer getIdByPseudo( Connection cnx , String pseudo) throws SQLException {
 
         PreparedStatement resultat = cnx.prepareStatement("SELECT idJoueur FROM joueur WHERE pseudo = ? ");
         resultat.setString(1,pseudo);
@@ -40,4 +40,11 @@ public class Crud {
         return resultId;
     }
 
+    public static ResultSet getPersoById(Connection cnx, Integer id) throws SQLException {
+
+        PreparedStatement resultat = cnx.prepareStatement("SELECT * FROM Personnage WHERE idJoueur = ?");
+        resultat.setInt(1, id);
+        ResultSet res = resultat.executeQuery();
+        return res;
+    }
 }
